@@ -1,8 +1,8 @@
 ..\obj\list.o: ..\FreeRTOS\src\list.c
-..\obj\list.o: D:\keil5\ARM\ARMCC\Bin\..\include\stdlib.h
+..\obj\list.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 ..\obj\list.o: ..\FreeRTOS\include\FreeRTOS.h
-..\obj\list.o: D:\keil5\ARM\ARMCC\Bin\..\include\stddef.h
-..\obj\list.o: D:\keil5\ARM\ARMCC\Bin\..\include\stdint.h
+..\obj\list.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+..\obj\list.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 ..\obj\list.o: ..\USER\FreeRTOSConfig.h
 ..\obj\list.o: ..\USER\stm32f4xx.h
 ..\obj\list.o: ..\CORE\core_cm4.h
@@ -39,7 +39,7 @@
 ..\obj\list.o: ..\FWLIB\inc\stm32f4xx_dcmi.h
 ..\obj\list.o: ..\FWLIB\inc\stm32f4xx_fsmc.h
 ..\obj\list.o: ..\SYSTEM\usart\usart.h
-..\obj\list.o: D:\keil5\ARM\ARMCC\Bin\..\include\stdio.h
+..\obj\list.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 ..\obj\list.o: ..\SYSTEM\sys\sys.h
 ..\obj\list.o: ..\FreeRTOS\include\projdefs.h
 ..\obj\list.o: ..\FreeRTOS\include\portable.h

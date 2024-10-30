@@ -359,13 +359,13 @@
             <wLevel>0</wLevel>
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
-            <uC99>0</uC99>
+            <uC99>1</uC99>
             <useXO>0</useXO>
             <VariousControls>
               <MiscControls></MiscControls>
               <Define>STM32F40_41xxx,USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\CORE;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\USER;..\FWLIB\inc;..\FreeRTOS\include;..\FreeRTOS\port\RVDS\ARM_CM4F</IncludePath>
+              <IncludePath>..\CORE;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\USER;..\FWLIB\inc;..\FreeRTOS\include;..\FreeRTOS\port\RVDS\ARM_CM4F;..\DEV\Communication;..\DEV\UATR5;..\DEV\USART2;..\DEV\LED1</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -697,6 +697,31 @@
               <FileName>timers.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\FreeRTOS\src\timers.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>HARDWARE</GroupName>
+          <Files>
+            <File>
+              <FileName>Usartlin.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\DEV\Communication\Usartlin.c</FilePath>
+            </File>
+            <File>
+              <FileName>led.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\DEV\LED1\led.c</FilePath>
+            </File>
+            <File>
+              <FileName>uart5.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\DEV\UATR5\uart5.c</FilePath>
+            </File>
+            <File>
+              <FileName>usart2.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\DEV\USART2\usart2.c</FilePath>
             </File>
           </Files>
         </Group>

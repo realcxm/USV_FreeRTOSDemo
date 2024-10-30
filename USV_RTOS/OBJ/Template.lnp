@@ -41,7 +41,6 @@
 "..\obj\delay.o"
 "..\obj\sys.o"
 "..\obj\usart.o"
-"..\obj\led.o"
 "..\obj\port.o"
 "..\obj\heap_4.o"
 "..\obj\croutine.o"
@@ -50,6 +49,10 @@
 "..\obj\queue.o"
 "..\obj\tasks.o"
 "..\obj\timers.o"
+"..\obj\usartlin.o"
+"..\obj\led.o"
+"..\obj\uart5.o"
+"..\obj\usart2.o"
 --strict --scatter "..\OBJ\Template.sct"
 --summary_stderr --info summarysizes --map --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers
