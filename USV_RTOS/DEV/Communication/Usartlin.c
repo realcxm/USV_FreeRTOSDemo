@@ -118,6 +118,7 @@ void debug_obj_init(send_data *data)
  * @retval      无
  */
 void revSolv_handle(uint8_t *data){
+//	printf("1");
     uint8_t temp[REV_MAX_LEN];
     uint8_t i;
     if (rev_p >= REV_MAX_LEN)          /* 超过缓冲区（数组）最大长度 */
@@ -145,6 +146,8 @@ void revSolv_handle(uint8_t *data){
 						for(i = 0;i < 5;i++ )
 						{
 						 rev_contrl_data.resv_data[i]=temp[i+2];
+							printf("rev:%d\r\n",rev_contrl_data.resv_data[i]);
+							
 						}
 						break;
 
@@ -159,7 +162,6 @@ void revSolv_handle(uint8_t *data){
        }
     }
 	  rev_p ++;
-//	printf("数据：%d\r\n",rev_data[1]);
 }
 
 

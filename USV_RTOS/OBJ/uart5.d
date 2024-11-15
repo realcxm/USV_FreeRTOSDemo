@@ -3,7 +3,7 @@
 ..\obj\uart5.o: ..\SYSTEM\sys\sys.h
 ..\obj\uart5.o: ..\USER\stm32f4xx.h
 ..\obj\uart5.o: ..\CORE\core_cm4.h
-..\obj\uart5.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+..\obj\uart5.o: D:\keil5\ARM\ARMCC\Bin\..\include\stdint.h
 ..\obj\uart5.o: ..\CORE\core_cmInstr.h
 ..\obj\uart5.o: ..\CORE\core_cmFunc.h
 ..\obj\uart5.o: ..\CORE\core_cm4_simd.h

@@ -1,7 +1,7 @@
 ..\obj\main.o: main.c
 ..\obj\main.o: ..\FreeRTOS\include\FreeRTOS.h
-..\obj\main.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
-..\obj\main.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+..\obj\main.o: D:\keil5\ARM\ARMCC\Bin\..\include\stddef.h
+..\obj\main.o: D:\keil5\ARM\ARMCC\Bin\..\include\stdint.h
 ..\obj\main.o: ..\USER\FreeRTOSConfig.h
 ..\obj\main.o: ..\USER\stm32f4xx.h
 ..\obj\main.o: ..\CORE\core_cm4.h
@@ -38,7 +38,7 @@
 ..\obj\main.o: ..\FWLIB\inc\stm32f4xx_dcmi.h
 ..\obj\main.o: ..\FWLIB\inc\stm32f4xx_fsmc.h
 ..\obj\main.o: ..\SYSTEM\usart\usart.h
-..\obj\main.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+..\obj\main.o: D:\keil5\ARM\ARMCC\Bin\..\include\stdio.h
 ..\obj\main.o: ..\SYSTEM\sys\sys.h
 ..\obj\main.o: ..\FreeRTOS\include\projdefs.h
 ..\obj\main.o: ..\FreeRTOS\include\portable.h
@@ -51,7 +51,11 @@
 ..\obj\main.o: ..\FreeRTOS\include\semphr.h
 ..\obj\main.o: ..\SYSTEM\delay\delay.h
 ..\obj\main.o: ..\DEV\LED1\led.h
-..\obj\main.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+..\obj\main.o: D:\keil5\ARM\ARMCC\Bin\..\include\string.h
 ..\obj\main.o: ..\DEV\UATR5\uart5.h
 ..\obj\main.o: ..\DEV\USART2\usart2.h
 ..\obj\main.o: ..\DEV\Communication\Usartlin.h
+..\obj\main.o: ..\DEV\remotecontrol\remotecontrol.h
+..\obj\main.o: ..\DEV\USART3\usart3.h
+..\obj\main.o: D:\keil5\ARM\ARMCC\Bin\..\include\stdarg.h
+..\obj\main.o: ..\DEV\NMEA_GPS\nmea_gps.h

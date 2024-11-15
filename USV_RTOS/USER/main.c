@@ -13,100 +13,10 @@
 #include "uart5.h"
 #include "usart2.h"
 #include "Usartlin.h"
-////任务优先级
-//#define START_TASK_PRIO		1
-////任务堆栈大小	
-//#define START_STK_SIZE 		128  
-////任务句柄
-//TaskHandle_t StartTask_Handler;
-////任务函数
-//void start_task(void *pvParameters);
-
-
-////任务优先级
-//#define LED1_TASK_PRIO		2
-////任务堆栈大小	
-//#define LED1_STK_SIZE 		50  
-////任务句柄
-//TaskHandle_t LED1Task_Handler;
-////任务函数
-//void led1_task(void *pvParameters);
-
-
-////任务优先级
-//#define FLOAT_TASK_PRIO		3
-////任务堆栈大小	
-//#define FLOAT_STK_SIZE 		128
-////任务句柄
-//TaskHandle_t FLOATTask_Handler;
-////任务函数
-//void float_task(void *pvParameters);
-
-
-//int main(void)
-//{ 
-//	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);//设置系统中断优先级分组4
-//	delay_init(168);		//初始化延时函数
-//	uart_init(115200);     	//初始化串口
-//	LED_Init();		        //初始化LED端口
-//	
-//	//创建开始任务
-//    xTaskCreate((TaskFunction_t )start_task,            //任务函数
-//                (const char*    )"start_task",          //任务名称
-//                (uint16_t       )START_STK_SIZE,        //任务堆栈大小
-//                (void*          )NULL,                  //传递给任务函数的参数
-//                (UBaseType_t    )START_TASK_PRIO,       //任务优先级
-//                (TaskHandle_t*  )&StartTask_Handler);   //任务句柄              
-//    vTaskStartScheduler();          //开启任务调度
-//}
-// 
-////开始任务任务函数
-//void start_task(void *pvParameters)
-//{
-//    taskENTER_CRITICAL();           //进入临界区
-//    //创建LED0任务
-//    xTaskCreate((TaskFunction_t )led1_task,     	
-//                (const char*    )"led1_task",   	
-//                (uint16_t       )LED1_STK_SIZE, 
-//                (void*          )NULL,				
-//                (UBaseType_t    )LED1_TASK_PRIO,	
-//                (TaskHandle_t*  )&LED1Task_Handler);         
-//    //浮点测试任务
-//    xTaskCreate((TaskFunction_t )float_task,     
-//                (const char*    )"float_task",   
-//                (uint16_t       )FLOAT_STK_SIZE, 
-//                (void*          )NULL,
-//                (UBaseType_t    )FLOAT_TASK_PRIO,
-//                (TaskHandle_t*  )&FLOATTask_Handler);  
-//    vTaskDelete(StartTask_Handler); //删除开始任务
-//    taskEXIT_CRITICAL();            //退出临界区
-//}
-
-////LED1任务函数 
-//void led1_task(void *pvParameters)
-//{
-//    while(1)
-//    {
-//		ledRun();
-//        vTaskDelay(500);
-//    }
-//}   
-
-
-////浮点测试任务
-//void float_task(void *pvParameters)
-//{
-//	static float float_num=0.00;
-//	while(1)
-//	{
-//		float_num+=0.01f;
-//		printf("float_num的值为: %.4f\r\n",float_num);
-//        vTaskDelay(1000);
-//	}
-//}
-
-
-
+#include "remotecontrol.h"
+#include "stdio.h"
+#include "usart3.h"
+#include "nmea_gps.h"
 /**************************** 任务句柄 ********************************/
 /* 
  * 任务句柄是一个指针，用于指向一个任务，当任务创建好之后，它就具有了一个任务句柄
@@ -114,24 +24,43 @@
  * 这个句柄可以为NULL。
  */
 static TaskHandle_t AppTaskCreate_Handle = NULL;/* 创建任务句柄 */
-static TaskHandle_t Uart_Task_Handle = NULL;/* UART2任务句柄 */
+/* LED任务句柄 */
+static TaskHandle_t LED_Task_Handle = NULL;
+/* 控制指令任务句柄(lora_Usart2)*/
+static TaskHandle_t ReceiveOrder_Task_Handle = NULL;/* UART2任务句柄 */
+/* 上传GPS任务句柄(lora_Usart2)*/
+static TaskHandle_t SendGPS_Task_Handle = NULL;
+
 /********************************** 内核对象句柄 *********************************/
-SemaphoreHandle_t BinarySem_Handle =NULL;
 
+SemaphoreHandle_t xSemaphore = NULL;
 /******************************* 全局变量声明 ************************************/
-/*
 
- */
+extern uint8_t Recv2[128];  // 串口2接收缓存
+extern u8 rx2_cnt;  // 接收数据个数计数变量
+extern u8 isReceiveUart2Cmd;
+
+
+
+extern uint8_t Recv3[USART3_MAX_RECV_LEN];//串口接收缓存
+extern u8 rx3_cnt;//接收数据个数计数变量
+extern u8 isReceiveUart3Cmd ;
+
+nmea_msg gpsx;
+ /******************************* 宏定义 ************************************/
  
-extern uint8_t Recv2;//串口接收缓存
+
 /*
 *************************************************************************
 *                             函数声明
 *************************************************************************
 */
 static void AppTaskCreate(void);/* 用于创建任务 */
-static void Uart_Task(void* pvParameters);/*串口2任务*/
+static void LED_Task(void* pvParameters);/* LED_Task任务实现 */
+static void ReceiveOrder_Task(void* pvParameters);/*串口2_接收控制指令任务*/
+static void SendGPS_Task(void* pvParameters);/* SendGPS_Task任务实现 */
 static void BSP_Init(void);/* 用于初始化板载相关资源 */
+
 /*****************************************************************
   * @brief  主函数
   * @param  无
@@ -144,6 +73,7 @@ static void BSP_Init(void);/* 用于初始化板载相关资源 */
 
 int main(void){
   BaseType_t xReturn = pdPASS;/* 定义一个创建信息返回值，默认为pdPASS */
+	
 /* 硬件初始化 */
   BSP_Init();
 	 /* 创建AppTaskCreate任务 */
@@ -171,24 +101,40 @@ int main(void){
 static void AppTaskCreate(void)
 {
   BaseType_t xReturn = pdPASS;/* 定义一个创建信息返回值，默认为pdPASS */
-  
   taskENTER_CRITICAL();           //进入临界区
 	
-  /* 创建 BinarySem */
-  BinarySem_Handle = xSemaphoreCreateBinary();	 
-  
-	if(NULL != BinarySem_Handle)
-    printf("BinarySem_Handle二值信号量创建成功!\n");
+  xSemaphore = xSemaphoreCreateBinary();
+	 /* 创建LED_Task任务 */
+  xReturn = xTaskCreate((TaskFunction_t )LED_Task, /* 任务入口函数 */
+                        (const char*    )"LED_Task",/* 任务名字 */
+                        (uint16_t       )512,   /* 任务栈大小 */
+                        (void*          )NULL,	/* 任务入口函数参数 */
+                        (UBaseType_t    )1,	    /* 任务的优先级 */
+                        (TaskHandle_t*  )&LED_Task_Handle);/* 任务控制块指针 */
+ if(pdPASS == xReturn)
+    printf("创建LED_Task任务成功!\n");
 	
-  /* 创建Uart_Task任务 */
-  xReturn = xTaskCreate((TaskFunction_t )Uart_Task,  /* 任务入口函数 */
-                        (const char*    )"Uart_Task",/* 任务名字 */
+  /* 创建ReceiveOrder_Task任务 */
+  xReturn = xTaskCreate((TaskFunction_t )ReceiveOrder_Task,  /* 任务入口函数 */
+                        (const char*    )"ReceiveOrder_Task",/* 任务名字 */
                         (uint16_t       )512,  /* 任务栈大小 */
                         (void*          )NULL,/* 任务入口函数参数 */
-                        (UBaseType_t    )3, /* 任务的优先级 */
-                        (TaskHandle_t*  )&Uart_Task_Handle);/* 任务控制块指针 */ 
-  if(pdPASS == xReturn)
-    printf("创建Uart_Task任务成功!\n");
+                        (UBaseType_t    )2, /* 任务的优先级 */
+                        (TaskHandle_t*  )&ReceiveOrder_Task_Handle);/* 任务控制块指针 */ 
+ 
+ if(pdPASS == xReturn)
+    printf("创建ReceiveOrder_Task任务成功!\n");
+ 
+   /* 创建SendGPS_Task任务 */
+  xReturn = xTaskCreate((TaskFunction_t )SendGPS_Task,  /* 任务入口函数 */
+                        (const char*    )"SendGPS_Task",/* 任务名字 */
+                        (uint16_t       )512,  /* 任务栈大小 */
+                        (void*          )NULL,/* 任务入口函数参数 */
+                        (UBaseType_t    )2, /* 任务的优先级 */
+                        (TaskHandle_t*  )&SendGPS_Task_Handle);/* 任务控制块指针 */ 
+ 
+ if(pdPASS == xReturn)
+    printf("创建SendGPS_Task任务成功!\n");
   
   vTaskDelete(AppTaskCreate_Handle); //删除AppTaskCreate任务
   
@@ -201,22 +147,79 @@ static void AppTaskCreate(void)
   * @ 参数    ：   
   * @ 返回值  ： 无
   ********************************************************************/
-static void Uart_Task(void* parameter)
+static void LED_Task(void* parameter)
+{	
+    while (1)
+    {
+	ledRun();
+    }
+
+}
+
+/**********************************************************************
+  * @ 函数名  ： ReceiveOrder_Task
+  * @ 功能说明： ReceiveOrder_Task任务主体 接收控制指令、解析并开启遥控
+  * @ 参数    ：   
+  * @ 返回值  ： 无
+  ********************************************************************/
+static void ReceiveOrder_Task(void* parameter)
 {	
 	BaseType_t xReturn = pdPASS;/* 定义一个创建信息返回值，默认为pdPASS */
-  while (1)
-  {
-    //获取二值信号量 xSemaphore,没获取到则一直等待
-		xReturn = xSemaphoreTake(BinarySem_Handle,/* 二值信号量句柄 */
-                              portMAX_DELAY); /* 等待时间 */
-    if(pdPASS == xReturn)
-    {
-			ledRun();
-      printf("收到数据:%d\n",Recv2);
-      memset((void *)Recv2,0,sizeof(Recv2));/* 清零 */
+    while (1) {
+//		printf("执行ReceiveOrder_Task！！！\r\n");
+        if (isReceiveUart2Cmd) {
+			//遥控
+            remotecontroller();
+			printf("传输遥控值!!!\r\n");
+        }
+		vTaskDelay(500);
     }
-  }
 }
+
+/**********************************************************************
+  * @ 函数名  ： SendGPS_Task
+  * @ 功能说明： SendGPS_Task任务主体 解析GPS指令、并且上传
+  * @ 参数    ：   
+  * @ 返回值  ： 无
+  ********************************************************************/
+static void SendGPS_Task(void* parameter)
+{
+	while(1){	
+		if (xSemaphoreTake(xSemaphore, portMAX_DELAY) == pdTRUE){
+				if(isReceiveUart3Cmd){
+	         // 当接收到完整的 GPS 数据时，开始解析
+					GPS_Analysis(&gpsx, Recv3);  //  GPS_Analysis 函数解析 Recv3 数组中的数据
+					printf("执行SendGPS_Task\r\n");
+					int temp_lon=(double)gpsx.longitude/10;  		/* temp_lon为真实经度，精确到小数点后七位 */     
+					int temp_lat= (double)gpsx.latitude ;/* temp_lat为真实纬度，精确到小数点后七位 */ 
+//					double real_hdop=(double)gpsx.hdop/10; 								/* 水平精度因子,对应实际值0~50.0 */     
+//					double real_pdop=(double)gpsx.pdop/10;  							/* 位置精度因子，对应实际值0~50.0 */          
+//					double real_vdop=(double)gpsx.vdop/10;							  /* 垂直精度因子,对应实际值0~50.0 */                        
+//					double num_of_weixing =(double)gpsx.posslnum; 				/* 可见卫星数量 */                               
+//					double real_altitude = (double)gpsx.altitude;					/* 海拔高度 */           
+//					double real_speed = (double)gpsx.speed;  							/* 地面速度 */        
+//					double real_fixmode = (double)gpsx.fixmode;						/* 定位类型 */                   
+//					char dingweiyouxiao= (char)gpsx.pvi;  								/* 定位是否有效 */                                
+//					char dingweimoshi = (char)gpsx.pmf;   							/* 定位模式标志 */                                   
+//					double time_sec = (double)gpsx.utc.sec;
+//					double time_min = (double)gpsx.utc.min;
+//					double time_hour = (double)gpsx.utc.hour+8;
+					printf("真实经度为： %d\r\n",temp_lon);
+					printf("真实纬度为： %d\r\n",temp_lat);
+//					printf("定位有效标志：%c\r\n",dingweiyouxiao);
+//					printf("时间为： %.0f:%.0f:%.0f\r\n",time_hour,time_min,time_sec);	
+            // 清除接收标志和数据
+            rx3_cnt = 0;  // 重置接收缓冲区计数
+            isReceiveUart3Cmd = 0;  // 清除接收标志
+		}
+
+	}
+
+	  vTaskDelay(500);
+  }
+
+}
+
 /***********************************************************************
   * @ 函数名  ： BSP_Init
   * @ 功能说明： 板级外设初始化，所有板子上的初始化均可放在这个函数里面
@@ -233,16 +236,18 @@ static void BSP_Init(void)
 	NVIC_PriorityGroupConfig( NVIC_PriorityGroup_4 );
 	
 	delay_init(168);  		//初始化延时函数
+	
+	LED_Init();//初始化	
 								
 	uart_init(115200);		//初始化串口波特率为115200        调试串口（PA9、PA10）
 								
 	usart2_init(115200);	//初始化串口2波特率为115200       接收控制指令（PA2、PA3）
 	
-	LED_Init();//初始化		
-
-//	usart3_init(9600);	//初始化串口3波特率为115200  	    GPS   （PD8、PD9）
-//	
-//	uart5_init(115200);   //初始化串口5                     上传数据GPS（PC12 TX,PD2 RX）
-
+//	printf("初始化完成！！！\r\n");
+	usart3_init(9600);	//初始化串口3波特率为115200  	    GPS   （PD8、PD9）
 	
 }
+
+
+
+

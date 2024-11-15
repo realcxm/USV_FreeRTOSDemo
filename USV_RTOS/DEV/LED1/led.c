@@ -1,6 +1,9 @@
 #include "led.h" 
 #include "delay.h"
-
+#include "FreeRTOS.h"
+#include "task.h"
+#include "queue.h"
+#include "semphr.h"
 //===========================================
 //LED IO初始化
 //初始化PB9为输出口.并使能这IO口的时钟		    
@@ -23,6 +26,6 @@ void LED_Init(void)
 
 void ledRun(void){
 	
-		GPIO_WriteBit(GPIO_LED,GPIO_Pin_LEDa,(BitAction)(1-GPIO_ReadOutputDataBit(GPIO_LED,GPIO_Pin_LEDa)));
-		delay_ms(500);
+GPIO_WriteBit(GPIO_LED,GPIO_Pin_LEDa,(BitAction)(1-GPIO_ReadOutputDataBit(GPIO_LED,GPIO_Pin_LEDa)));
+ vTaskDelay(500);
 }

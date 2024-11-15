@@ -43,33 +43,33 @@ void uart5_init(u32 bound)
 }
 
 
-//=======================================
-//串口5中断服务程序
-//=======================================
-uint8_t Recv_uart5[128];//串口接收缓存
-u8 rx5_cnt;//接收数据个数计数变量
-u8 isReceiveUart5Cmd = 0;
-u8 rx5_flag=0;
+////=======================================
+////串口5中断服务程序
+////=======================================
+//uint8_t Recv_uart5[128];//串口接收缓存
+//u8 rx5_cnt;//接收数据个数计数变量
+//u8 isReceiveUart5Cmd = 0;
+//u8 rx5_flag=0;
 
-void UART5_IRQHandler(void)                	
-{
-	uint8_t data;//接收数据暂存变量
+//void UART5_IRQHandler(void)                	
+//{
+//	uint8_t data;//接收数据暂存变量
 
-	if(USART_GetITStatus(UART5, USART_IT_RXNE) != RESET)  //接收中断
-	{
-		data = USART_ReceiveData(UART5);   			
-		Recv_uart5[rx5_cnt++]=data;//接收的数据存入接收数组 
-		rx5_flag = 1;
-		USART_ClearITPendingBit(UART5,USART_IT_RXNE);
-	} 
-	
-	if(USART_GetITStatus(UART5, USART_IT_IDLE) != RESET)//空闲中断
-	{
-		isReceiveUart5Cmd=1;
-		data = USART1->SR;//串口空闲中断的中断标志只能通过先读SR寄存器，再读DR寄存器清除！
-		data = USART1->DR;		
-	}
-} 
+//	if(USART_GetITStatus(UART5, USART_IT_RXNE) != RESET)  //接收中断
+//	{
+//		data = USART_ReceiveData(UART5);   			
+//		Recv_uart5[rx5_cnt++]=data;//接收的数据存入接收数组 
+//		rx5_flag = 1;
+//		USART_ClearITPendingBit(UART5,USART_IT_RXNE);
+//	} 
+//	
+//	if(USART_GetITStatus(UART5, USART_IT_IDLE) != RESET)//空闲中断
+//	{
+//		isReceiveUart5Cmd=1;
+//		data = USART1->SR;//串口空闲中断的中断标志只能通过先读SR寄存器，再读DR寄存器清除！
+//		data = USART1->DR;		
+//	}
+//} 
 
 //uart5发送数据
 void uart5_send(u8*data, u8 len)

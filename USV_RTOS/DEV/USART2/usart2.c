@@ -8,29 +8,19 @@
 #include "queue.h"
 #include "semphr.h"
 
-//#define 	UART2_MAXBUFFERSIZE		256
-
 uint8_t Recv2[128];//串口接收缓存
 u8 rx2_cnt;//接收数据个数计数变量
 u8 isReceiveUart2Cmd = 0;
-u8 rx2_flag=0;
-extern SemaphoreHandle_t BinarySem_Handle;
-
-void USART2_RX_IRQHandler(void)                	
+void USART2_IRQHandler(void)                	
 {
-	BaseType_t pxHigherPriorityTaskWoken;
 	uint8_t data;//接收数据暂存变量
 
 	if(USART_GetITStatus(USART2, USART_IT_RXNE) != RESET)  //接收中断
 	{
 		data = USART_ReceiveData(USART2);   			
-		rx2_flag = 1;
-		Recv2[rx2_cnt++]=data;//接收的数据存入接收数组 
-//		revSolv_handle(&data);
-//		printf("%c",data);
- // 给出二值信号量，通知前台程序有新数据可用
-    xSemaphoreGiveFromISR(BinarySem_Handle, &pxHigherPriorityTaskWoken);
-		
+
+		revSolv_handle(&data);
+
 		USART_ClearITPendingBit(USART2,USART_IT_RXNE);
 	} 
 	
@@ -41,8 +31,6 @@ void USART2_RX_IRQHandler(void)
 		data = USART2->DR;
 		
 	}
-	// 如果有更高优先级任务需要唤醒，则进行一次上下文切换
-	portYIELD_FROM_ISR(pxHigherPriorityTaskWoken);	
 } 
 
 
@@ -66,7 +54,7 @@ GPIO_InitStructure.GPIO_OType = GPIO_OType_PP; //推挽复用输出
 GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP; //上拉
 GPIO_Init(GPIOA,&GPIO_InitStructure); //初始化GPIOA2，和GPIOA3
 //4.串口参数初始化：设置波特率，字长，奇偶校验等参数
-USART_InitStructure.USART_BaudRate = bound;//波特率一般设置为9600;
+USART_InitStructure.USART_BaudRate = bound;//波特率一般设置为115200;
 USART_InitStructure.USART_WordLength = USART_WordLength_8b;//字长为8位数据格式
 USART_InitStructure.USART_StopBits = USART_StopBits_1;//一个停止位
 USART_InitStructure.USART_Parity = USART_Parity_No;//无奇偶校验位
@@ -83,8 +71,8 @@ USART_Cmd(USART2, ENABLE);                    //使能串口
 
 	//Usart2 NVIC 配置
 	NVIC_InitStructure.NVIC_IRQChannel = USART2_IRQn;//串口2中断通道
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=3;//抢占优先级3
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority =3;		//子优先级3
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=5;//抢占优先级3
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority =0;		//子优先级3
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;			//IRQ通道使能
 	NVIC_Init(&NVIC_InitStructure);	//根据指定的参数初始化VIC寄存器、
 

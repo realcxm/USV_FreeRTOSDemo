@@ -1,9 +1,9 @@
 ..\obj\usart2.o: ..\DEV\USART2\usart2.c
 ..\obj\usart2.o: ..\DEV\USART2\usart2.h
-..\obj\usart2.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+..\obj\usart2.o: D:\keil5\ARM\ARMCC\Bin\..\include\stdio.h
 ..\obj\usart2.o: ..\USER\stm32f4xx.h
 ..\obj\usart2.o: ..\CORE\core_cm4.h
-..\obj\usart2.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+..\obj\usart2.o: D:\keil5\ARM\ARMCC\Bin\..\include\stdint.h
 ..\obj\usart2.o: ..\CORE\core_cmInstr.h
 ..\obj\usart2.o: ..\CORE\core_cmFunc.h
 ..\obj\usart2.o: ..\CORE\core_cm4_simd.h
@@ -39,7 +39,7 @@
 ..\obj\usart2.o: ..\SYSTEM\sys\sys.h
 ..\obj\usart2.o: ..\DEV\Communication\Usartlin.h
 ..\obj\usart2.o: ..\FreeRTOS\include\FreeRTOS.h
-..\obj\usart2.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+..\obj\usart2.o: D:\keil5\ARM\ARMCC\Bin\..\include\stddef.h
 ..\obj\usart2.o: ..\USER\FreeRTOSConfig.h
 ..\obj\usart2.o: ..\SYSTEM\usart\usart.h
 ..\obj\usart2.o: ..\FreeRTOS\include\projdefs.h

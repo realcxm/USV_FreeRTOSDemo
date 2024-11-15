@@ -147,7 +147,7 @@
             <RestoreSysVw>1</RestoreSysVw>
           </Target>
           <RunDebugAfterBuild>0</RunDebugAfterBuild>
-          <TargetSelection>11</TargetSelection>
+          <TargetSelection>12</TargetSelection>
           <SimDlls>
             <CpuDll></CpuDll>
             <CpuDllArguments></CpuDllArguments>
@@ -161,7 +161,7 @@
             <PeripheralDll></PeripheralDll>
             <PeripheralDllArguments></PeripheralDllArguments>
             <InitializationFile></InitializationFile>
-            <Driver>STLink\ST-LINKIII-KEIL_SWO.dll</Driver>
+            <Driver>BIN\CMSIS_AGDI.dll</Driver>
           </TargetDlls>
         </DebugOption>
         <Utilities>
@@ -365,7 +365,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F40_41xxx,USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\CORE;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\USER;..\FWLIB\inc;..\FreeRTOS\include;..\FreeRTOS\port\RVDS\ARM_CM4F;..\DEV\Communication;..\DEV\UATR5;..\DEV\USART2;..\DEV\LED1</IncludePath>
+              <IncludePath>..\CORE;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\USER;..\FWLIB\inc;..\FreeRTOS\include;..\FreeRTOS\port\RVDS\ARM_CM4F;..\DEV\Communication;..\DEV\UATR5;..\DEV\USART2;..\DEV\LED1;..\DEV\MYDMA;..\DEV\NMEA_GPS;..\DEV\remotecontrol;..\DEV\T200_Motor;..\DEV\USART3</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -722,6 +722,26 @@
               <FileName>usart2.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\DEV\USART2\usart2.c</FilePath>
+            </File>
+            <File>
+              <FileName>nmea_gps.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\DEV\NMEA_GPS\nmea_gps.c</FilePath>
+            </File>
+            <File>
+              <FileName>remotecontrol.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\DEV\remotecontrol\remotecontrol.c</FilePath>
+            </File>
+            <File>
+              <FileName>T200_motors.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\DEV\T200_Motor\T200_motors.c</FilePath>
+            </File>
+            <File>
+              <FileName>usart3.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\DEV\USART3\usart3.c</FilePath>
             </File>
           </Files>
         </Group>
